@@ -1,7 +1,19 @@
 package main
 
-import "fmt"
+import (
+	"fmt"
+
+	"github.com/miromax42/go-spotigram/cmd/tlg"
+)
 
 func main() {
-	fmt.Printf("Hello spotigram")
+	bot, err := tlg.Init()
+	if err != nil {
+		panic(err)
+	}
+	_ = bot
+}
+
+func must(e error) {
+	fmt.Print(e.Error())
 }
