@@ -69,7 +69,12 @@ func process(bot *tgbotapi.BotAPI, update *tgbotapi.Update, cl *spotify.Client, 
 			return msg, err
 		}
 		fmt.Printf("\n%+v\n", track)
-		msg.Text = fmt.Sprintf("%s - %s", track.Item.Artists[0].Name, track.Item.Name)
+		if track != nil && track.Item != nil && track.Item.Artists != nil && len(track.Item.Artists) > 0 {
+			msg.Text = fmt.Sprintf("%s - %s", track.Item.Artists[0].Name, track.Item.Name)
+		} else {
+			msg.Text = "Сейчас...походу тихий час :("
+		}
+
 	case "showall":
 		//todo
 	case "start":
