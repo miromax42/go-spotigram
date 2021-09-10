@@ -23,12 +23,20 @@ import (
 // You must register an application at Spotify's developer portal
 // and enter this value.
 
-const redirectURI = "http://localhost:80/callback"
+// const redirectURI = "http://192.168.2.109:80/callback"
 
 var (
 	SPOTIFY_ID     = "34af5fddff594cfb89e167bcf60f55d0"
 	SPOTIFY_SECRET = "681668a170f641218200be9d3103f973"
-	auth           = spotifyauth.New(
+	auth           *spotifyauth.Authenticator
+	ch             = make(chan *spotify.Client)
+	state          = "123"
+)
+
+func Init(redirectURI string) (*spotify.Client, *spotify.PrivateUser, error) {
+	// first start an HTTP server
+	redirectURI = fmt.Sprintf("http://%s:80/callback", redirectURI)
+	auth = spotifyauth.New(
 		spotifyauth.WithRedirectURL(redirectURI),
 		spotifyauth.WithScopes(
 			spotifyauth.ScopeUserModifyPlaybackState,
@@ -36,12 +44,6 @@ var (
 			spotifyauth.ScopeUserReadPlaybackState),
 		spotifyauth.WithClientSecret(SPOTIFY_SECRET),
 		spotifyauth.WithClientID(SPOTIFY_ID))
-	ch    = make(chan *spotify.Client)
-	state = "123"
-)
-
-func Init() (*spotify.Client, *spotify.PrivateUser, error) {
-	// first start an HTTP server
 	http.HandleFunc("/callback", completeAuth)
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		log.Println("Got request for:", r.URL.String())

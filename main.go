@@ -2,6 +2,7 @@ package main
 
 import (
 	//"context"
+	"flag"
 	"fmt"
 
 	"github.com/miromax42/go-spotigram/cmd/sp"
@@ -11,28 +12,15 @@ import (
 )
 
 func main() {
+	redirectUri := flag.String("host", "localhost", "sets address for callback spotify")
+	flag.Parse()
 
-	client, user, err := sp.Init()
+	client, user, err := sp.Init(*redirectUri)
 	if err != nil {
 		panic(err)
 	}
-	_, _, _ = client, user, err
+	// defer tlg.Init(client, user)
 	tlg.Init(client, user)
-	// if err != nil {
-	// 	panic(err)
-	// }
-	// _ = bot
-
-	fmt.Print("\t------------------------------ bot init !!!!!!!!!!!!!!!")
-
-	// client, user, err := sp.Init()
-	// _, _, _ = client, user, err
-
-	// pl, err := client.CreatePlaylistForUser(context.Background(), user.ID, "TESTT", "testt", true, false)
-	// if err != nil {
-	// 	panic(err)
-	// }
-	// fmt.Printf("New Playlist cleated %v", pl.ID)
 }
 
 func must(e error) {
