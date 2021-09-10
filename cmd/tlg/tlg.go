@@ -1,24 +1,26 @@
 package tlg
 
 import (
+	//"fmt"
 	"fmt"
 	"log"
 
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api"
+	"github.com/zmb3/spotify/v2"
 )
 
 var (
-	TG_TOKEN = "1990841068:AAG_lMW107e-21sAIaTTW2A97YsYRwZNJek"
+	TG_TOKEN = "1990841068:AAE8g-yvlRb1yfQBP_sd5ECd4-ojuy3VI2M"
 	DEBUG    = true
 )
 
-func Init() (*tgbotapi.BotAPI, error) {
+func Init(cl *spotify.Client, usr *spotify.PrivateUser) {
 	bot, err := tgbotapi.NewBotAPI(TG_TOKEN)
 	if err != nil {
 		log.Panic(err)
 	}
 
-	bot.Debug = DEBUG
+	bot.Debug = true
 
 	log.Printf("Authorized on account %s", bot.Self.UserName)
 
@@ -26,18 +28,30 @@ func Init() (*tgbotapi.BotAPI, error) {
 	u.Timeout = 60
 
 	updates, err := bot.GetUpdatesChan(u)
+	if err != nil {
+		panic(err)
+	}
 
 	for update := range updates {
 		if update.Message == nil {
+			// ignore any non-Message Updates
 			continue
 		}
-		msg := process(&update)
-		fmt.Printf("-------endend----------%v\n", msg)
 
-		bot.Send(msg)
+		log.Printf("[%s] %s", update.Message.From.UserName, update.Message.Text)
+
+		msg, err := process(bot, &update, cl, usr)
+
+		if err != nil {
+			str := fmt.Sprintf("О ужос, случилась ошибка: %s", err.Error())
+			msg = tgbotapi.NewMessage(update.Message.Chat.ID, str)
+			bot.Send(msg)
+		} else {
+			bot.Send(msg)
+		}
 
 	}
 
-	return bot, err
+	// return bot, err
 
 }
