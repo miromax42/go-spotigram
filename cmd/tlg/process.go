@@ -39,11 +39,13 @@ func process(bot *tgbotapi.BotAPI, update *tgbotapi.Update, cl *spotify.Client, 
 		}
 
 		// handle album results
-		if results.Tracks != nil {
+		if results.Tracks != nil && results.Tracks.Tracks != nil && (len(results.Tracks.Tracks) > 0) {
 			item := results.Tracks.Tracks[0]
 			msg.Text = fmt.Sprintf("%s - %s", item.Name, item.Artists[0].Name)
 			msg.ReplyMarkup = mainMenuKeyboard
 			cl.QueueSong(context.Background(), item.ID)
+		} else {
+			msg.Text = fmt.Sprintf("Ну ты походу пьяная свинья, ничего не найдено по твоему запросу")
 		}
 
 	}
