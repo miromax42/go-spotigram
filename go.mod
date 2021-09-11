@@ -14,6 +14,7 @@ require (
 	github.com/gotd/ige v0.2.1 // indirect
 	github.com/gotd/neo v0.1.3 // indirect
 	github.com/gotd/xor v0.1.1 // indirect
+	github.com/kardianos/service v1.2.0
 	github.com/klauspost/compress v1.13.5 // indirect
 	github.com/technoweenie/multipartstreamer v1.0.1 // indirect
 	go.uber.org/atomic v1.9.0 // indirect
@@ -28,3 +29,5 @@ require (
 	google.golang.org/protobuf v1.27.1 // indirect
 	nhooyr.io/websocket v1.8.7 // indirect
 )
+
+require golang.org/x/sys v0.0.0-20210615035016-665e8c7367d1 // indirect

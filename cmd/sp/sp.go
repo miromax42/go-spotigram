@@ -12,6 +12,7 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"time"
 
 	// tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api"
 	spotifyauth "github.com/zmb3/spotify/v2/auth"
@@ -67,10 +68,12 @@ func Init(redirectURI string) (*spotify.Client, *spotify.PrivateUser, error) {
 	if err != nil {
 		log.Fatal(err)
 	}
+	go keepAlive(*client)
 
 	fmt.Println("You are logged in as:", user.ID)
 
 	return client, user, err
+
 }
 
 func completeAuth(w http.ResponseWriter, r *http.Request) {
@@ -88,4 +91,13 @@ func completeAuth(w http.ResponseWriter, r *http.Request) {
 	client := spotify.New(auth.Client(r.Context(), tok))
 	fmt.Fprintf(w, "Login Completed!")
 	ch <- client
+}
+func keepAlive(client spotify.Client) {
+	for {
+		a, _ := client.PlayerCurrentlyPlaying(context.Background())
+		_ = a
+		time.Sleep(60 * time.Second)
+
+	}
+
 }

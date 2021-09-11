@@ -2,7 +2,6 @@ package tlg
 
 import (
 	//"fmt"
-	"fmt"
 	"log"
 
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api"
@@ -43,9 +42,7 @@ func Init(cl *spotify.Client, usr *spotify.PrivateUser) {
 		msg, err := process(bot, &update, cl, usr)
 
 		if err != nil {
-			str := fmt.Sprintf("О ужос, случилась ошибка: %s", err.Error())
-			msg = tgbotapi.NewMessage(update.Message.Chat.ID, str)
-			bot.Send(msg)
+			panic(err)
 		} else {
 			bot.Send(msg)
 		}
